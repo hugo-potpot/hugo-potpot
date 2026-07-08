@@ -17,7 +17,7 @@ RETRY_BACKOFF_SECONDS = 2
 
 
 class GitHubClient:
-    """Client HTTP minimal pour l'API GitHub (headers, pagination, retry)."""
+    """Minimal HTTP client for the GitHub API (headers, pagination, retry)."""
 
     def __init__(self, username):
         self.username = username
@@ -36,7 +36,7 @@ class GitHubClient:
                 response = requests.get(url, params=params, headers=self._headers(), timeout=REQUEST_TIMEOUT)
                 if response.status_code == 403 and "rate limit" in response.text.lower():
                     raise RuntimeError(
-                        "⛔ Rate limit GitHub atteinte. Ajoute/renouvelle GH_TOKEN pour augmenter le quota."
+                        "⛔ GitHub rate limit reached. Add/renew GH_TOKEN to raise the quota."
                     )
                 response.raise_for_status()
                 return response.json()
@@ -44,10 +44,10 @@ class GitHubClient:
                 last_error = err
                 if attempt < MAX_RETRIES:
                     time.sleep(RETRY_BACKOFF_SECONDS * attempt)
-        raise RuntimeError(f"Échec de l'appel à {url} après {MAX_RETRIES} tentatives : {last_error}")
+        raise RuntimeError(f"Call to {url} failed after {MAX_RETRIES} attempts: {last_error}")
 
     def _fetch_paginated(self, url, params=None):
-        """Récupère toutes les pages d'un endpoint GitHub."""
+        """Fetch all pages from a GitHub API endpoint."""
         results = []
         params = dict(params or {})
         params["per_page"] = 100
@@ -64,14 +64,14 @@ class GitHubClient:
         return results
 
     def get_orgs(self):
-        """Récupère les orgs de l'utilisateur authentifié (nécessite GH_TOKEN)."""
+        """Fetch the authenticated user's orgs (requires GH_TOKEN)."""
         if not self.token:
-            print("⚠️  Pas de GH_TOKEN : les repos d'organisations ne seront pas inclus.")
+            print("⚠️  No GH_TOKEN: organization repos will not be included.")
             return []
         try:
             return self._fetch_paginated("https://api.github.com/user/orgs")
         except RuntimeError as err:
-            print(f"⚠️  Impossible de récupérer les orgs : {err}")
+            print(f"⚠️  Could not fetch orgs: {err}")
             return []
 
     def get_personal_repos(self):
@@ -84,7 +84,7 @@ class GitHubClient:
         return self._fetch_paginated(f"https://api.github.com/orgs/{org_name}/repos")
 
     def get_all_repos(self):
-        """Récupère les repos perso + ceux de toutes les orgs accessibles."""
+        """Fetch personal repos plus repos from every accessible org."""
         repos = self.get_personal_repos()
         for org in self.get_orgs():
             repos.extend(self.get_org_repos(org["login"]))
@@ -92,7 +92,7 @@ class GitHubClient:
 
 
 def select_recent_repos(repos, username, count):
-    """Dédoublonne, filtre (forks/archivés/profil) et garde les plus récents."""
+    """Deduplicate, filter (forks/archived/profile) and keep the most recent."""
     seen = set()
     filtered = []
     for repo in repos:
@@ -111,8 +111,8 @@ def select_recent_repos(repos, username, count):
 
 def build_table(repos, username):
     rows = [
-        "| Projet | Description | Langage | ⭐ | Dernière MàJ |",
-        "|--------|-------------|---------|-----|--------------|",
+        "| Project | Description | Language | ⭐ | Last Updated |",
+        "|---------|--------------|----------|-----|--------------|",
     ]
     for repo in repos:
         name = repo["name"]
@@ -128,17 +128,17 @@ def build_table(repos, username):
 
 
 def splice_section(content, start_marker, end_marker, new_body):
-    """Remplace le contenu entre deux marqueurs (marqueurs conservés)."""
+    """Replace the content between two markers (markers are kept)."""
     start_idx = content.find(start_marker)
     end_idx = content.find(end_marker)
 
     if start_idx == -1 or end_idx == -1:
         missing = [m for m, i in [(start_marker, start_idx), (end_marker, end_idx)] if i == -1]
-        raise RuntimeError(f"Marqueur(s) manquant(s) : {missing}")
+        raise RuntimeError(f"Missing marker(s): {missing}")
 
     start_idx += len(start_marker)
     if start_idx > end_idx:
-        raise RuntimeError("Les marqueurs sont dans le mauvais ordre.")
+        raise RuntimeError("Markers are in the wrong order.")
 
     return content[:start_idx] + new_body + content[end_idx:]
 
@@ -149,15 +149,15 @@ def update_readme(table):
 
     utc_plus_1 = timezone(timedelta(hours=1))
     now = datetime.now(timezone.utc).astimezone(utc_plus_1)
-    now_str = now.strftime("%d/%m/%Y à %H:%M UTC+1")
-    new_body = f"\n{table}\n\n> 🕐 Dernière mise à jour : {now_str}\n"
+    now_str = now.strftime("%d/%m/%Y at %H:%M UTC+1")
+    new_body = f"\n{table}\n\n> 🕐 Last updated: {now_str}\n"
 
     new_content = splice_section(content, "<!-- PROJECTS-START -->", "<!-- PROJECTS-END -->", new_body)
 
     with open(README_PATH, "w", encoding="utf-8") as f:
         f.write(new_content)
 
-    print(f"✅ README mis à jour avec {REPO_COUNT} projets récents (perso + orgs).")
+    print(f"✅ README updated with {REPO_COUNT} recent projects (personal + orgs).")
 
 
 def main():
@@ -172,5 +172,5 @@ if __name__ == "__main__":
     try:
         main()
     except Exception as e:
-        print(f"❌ Échec de la mise à jour du README : {e}")
+        print(f"❌ Failed to update README: {e}")
         sys.exit(1)

@@ -2,9 +2,9 @@ name: Update README with Recent Projects
 
 on:
   schedule:
-    # Tous les jours à 6h00 UTC
+    # Every day at 6:00 UTC
     - cron: "0 6 * * *"
-  workflow_dispatch: # Permet de lancer manuellement
+  workflow_dispatch: # Allows manual triggering
 
 jobs:
   update-readme:
