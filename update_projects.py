@@ -1,87 +1,115 @@
 import os
-import requests
+import sys
+import time
 from datetime import datetime, timedelta, timezone
 
-GITHUB_USERNAME = "HugoDemont62"
-REPO_COUNT = 5
-README_PATH = "README.md"
+import requests
+from dotenv import load_dotenv
+
+load_dotenv()
+
+GITHUB_USERNAME = os.environ.get("GITHUB_USERNAME")
+REPO_COUNT = int(os.environ.get("REPO_COUNT", "5"))
+README_PATH = os.environ.get("README_PATH", "README.md")
 REQUEST_TIMEOUT = 10
+MAX_RETRIES = 3
+RETRY_BACKOFF_SECONDS = 2
 
-def get_headers():
-    headers = {"Accept": "application/vnd.github+json"}
-    token = os.environ.get("GH_TOKEN")
-    if token:
-        headers["Authorization"] = f"Bearer {token}"
-    return headers
 
-def fetch_paginated(url, params=None):
-    """Fetch all pages from a GitHub API endpoint."""
-    results = []
-    params = params or {}
-    params["per_page"] = 100
-    page = 1
-    while True:
-        params["page"] = page
-        r = requests.get(url, params=params, headers=get_headers(), timeout=REQUEST_TIMEOUT)
-        r.raise_for_status()
-        data = r.json()
-        if not data:
-            break
-        results.extend(data)
-        # Si moins de 100 résultats, c'est la dernière page
-        if len(data) < 100:
-            break
-        page += 1
-    return results
+class GitHubClient:
+    """Client HTTP minimal pour l'API GitHub (headers, pagination, retry)."""
 
-def get_orgs():
-    """Récupère les orgs de l'utilisateur authentifié (nécessite GH_TOKEN)."""
-    token = os.environ.get("GH_TOKEN")
-    if not token:
-        print("⚠️  Pas de GH_TOKEN : les repos d'organisations ne seront pas inclus.")
-        return []
-    try:
-        return fetch_paginated("https://api.github.com/user/orgs")
-    except requests.HTTPError as e:
-        print(f"⚠️  Impossible de récupérer les orgs : {e}")
-        return []
+    def __init__(self, username):
+        self.username = username
+        self.token = os.environ.get("GH_TOKEN")
 
-def get_all_repos():
-    """Récupère les repos perso + ceux de toutes les orgs, filtrés et triés."""
-    # Repos personnels
-    personal = fetch_paginated(
-        f"https://api.github.com/users/{GITHUB_USERNAME}/repos",
-        params={"sort": "pushed", "direction": "desc", "type": "owner"},
-    )
+    def _headers(self):
+        headers = {"Accept": "application/vnd.github+json"}
+        if self.token:
+            headers["Authorization"] = f"Bearer {self.token}"
+        return headers
 
-    # Repos des orgs
-    org_repos = []
-    for org in get_orgs():
-        org_name = org["login"]
-        repos = fetch_paginated(f"https://api.github.com/orgs/{org_name}/repos")
-        org_repos.extend(repos)
+    def _get(self, url, params):
+        last_error = None
+        for attempt in range(1, MAX_RETRIES + 1):
+            try:
+                response = requests.get(url, params=params, headers=self._headers(), timeout=REQUEST_TIMEOUT)
+                if response.status_code == 403 and "rate limit" in response.text.lower():
+                    raise RuntimeError(
+                        "⛔ Rate limit GitHub atteinte. Ajoute/renouvelle GH_TOKEN pour augmenter le quota."
+                    )
+                response.raise_for_status()
+                return response.json()
+            except (requests.ConnectionError, requests.Timeout, requests.HTTPError) as err:
+                last_error = err
+                if attempt < MAX_RETRIES:
+                    time.sleep(RETRY_BACKOFF_SECONDS * attempt)
+        raise RuntimeError(f"Échec de l'appel à {url} après {MAX_RETRIES} tentatives : {last_error}")
 
-    all_repos = personal + org_repos
+    def _fetch_paginated(self, url, params=None):
+        """Récupère toutes les pages d'un endpoint GitHub."""
+        results = []
+        params = dict(params or {})
+        params["per_page"] = 100
+        page = 1
+        while True:
+            params["page"] = page
+            data = self._get(url, params)
+            if not data:
+                break
+            results.extend(data)
+            if len(data) < 100:
+                break
+            page += 1
+        return results
 
-    # Dédoublonnage par id, filtre forks/archivés/profil
+    def get_orgs(self):
+        """Récupère les orgs de l'utilisateur authentifié (nécessite GH_TOKEN)."""
+        if not self.token:
+            print("⚠️  Pas de GH_TOKEN : les repos d'organisations ne seront pas inclus.")
+            return []
+        try:
+            return self._fetch_paginated("https://api.github.com/user/orgs")
+        except RuntimeError as err:
+            print(f"⚠️  Impossible de récupérer les orgs : {err}")
+            return []
+
+    def get_personal_repos(self):
+        return self._fetch_paginated(
+            f"https://api.github.com/users/{self.username}/repos",
+            params={"sort": "pushed", "direction": "desc", "type": "owner"},
+        )
+
+    def get_org_repos(self, org_name):
+        return self._fetch_paginated(f"https://api.github.com/orgs/{org_name}/repos")
+
+    def get_all_repos(self):
+        """Récupère les repos perso + ceux de toutes les orgs accessibles."""
+        repos = self.get_personal_repos()
+        for org in self.get_orgs():
+            repos.extend(self.get_org_repos(org["login"]))
+        return repos
+
+
+def select_recent_repos(repos, username, count):
+    """Dédoublonne, filtre (forks/archivés/profil) et garde les plus récents."""
     seen = set()
     filtered = []
-    for r in all_repos:
-        if r["id"] in seen:
+    for repo in repos:
+        if repo["id"] in seen:
             continue
-        seen.add(r["id"])
-        if r.get("fork") or r.get("archived"):
+        seen.add(repo["id"])
+        if repo.get("fork") or repo.get("archived"):
             continue
-        if r["name"].lower() == GITHUB_USERNAME.lower():
+        if repo["name"].lower() == username.lower():
             continue
-        filtered.append(r)
+        filtered.append(repo)
 
-    # Tri par pushed_at décroissant
     filtered.sort(key=lambda r: r["pushed_at"], reverse=True)
+    return filtered[:count]
 
-    return filtered[:REPO_COUNT]
 
-def build_table(repos):
+def build_table(repos, username):
     rows = [
         "| Projet | Description | Langage | ⭐ | Dernière MàJ |",
         "|--------|-------------|---------|-----|--------------|",
@@ -93,44 +121,56 @@ def build_table(repos):
         lang = repo["language"] or "—"
         stars = repo["stargazers_count"]
         pushed = datetime.strptime(repo["pushed_at"], "%Y-%m-%dT%H:%M:%SZ").strftime("%d/%m/%Y")
-        # Préfixe org si ce n'est pas un repo perso
         owner = repo["owner"]["login"]
-        display_name = f"{owner}/{name}" if owner.lower() != GITHUB_USERNAME.lower() else name
+        display_name = f"{owner}/{name}" if owner.lower() != username.lower() else name
         rows.append(f"| [{display_name}]({url}) | {desc} | `{lang}` | {stars} | {pushed} |")
     return "\n".join(rows)
 
-def update_readme(table):
-    with open(README_PATH, "r", encoding="utf-8") as f:
-        content = f.read()
 
-    start_marker = "<!-- PROJECTS-START -->"
-    end_marker = "<!-- PROJECTS-END -->"
+def splice_section(content, start_marker, end_marker, new_body):
+    """Remplace le contenu entre deux marqueurs (marqueurs conservés)."""
     start_idx = content.find(start_marker)
     end_idx = content.find(end_marker)
 
     if start_idx == -1 or end_idx == -1:
         missing = [m for m, i in [(start_marker, start_idx), (end_marker, end_idx)] if i == -1]
-        raise RuntimeError(f"Marqueur(s) manquant(s) dans {README_PATH} : {missing}")
+        raise RuntimeError(f"Marqueur(s) manquant(s) : {missing}")
 
     start_idx += len(start_marker)
     if start_idx > end_idx:
         raise RuntimeError("Les marqueurs sont dans le mauvais ordre.")
 
+    return content[:start_idx] + new_body + content[end_idx:]
+
+
+def update_readme(table):
+    with open(README_PATH, "r", encoding="utf-8") as f:
+        content = f.read()
+
     utc_plus_1 = timezone(timedelta(hours=1))
     now = datetime.now(timezone.utc).astimezone(utc_plus_1)
     now_str = now.strftime("%d/%m/%Y à %H:%M UTC+1")
-    updated_line = f"\n> 🕐 Dernière mise à jour : {now_str}\n"
+    new_body = f"\n{table}\n\n> 🕐 Dernière mise à jour : {now_str}\n"
 
-    new_content = content[:start_idx] + "\n" + table + "\n" + updated_line + content[end_idx:]
+    new_content = splice_section(content, "<!-- PROJECTS-START -->", "<!-- PROJECTS-END -->", new_body)
+
     with open(README_PATH, "w", encoding="utf-8") as f:
         f.write(new_content)
 
     print(f"✅ README mis à jour avec {REPO_COUNT} projets récents (perso + orgs).")
 
+
 def main():
-    repos = get_all_repos()
-    table = build_table(repos)
+    client = GitHubClient(GITHUB_USERNAME)
+    repos = client.get_all_repos()
+    recent_repos = select_recent_repos(repos, GITHUB_USERNAME, REPO_COUNT)
+    table = build_table(recent_repos, GITHUB_USERNAME)
     update_readme(table)
 
+
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as e:
+        print(f"❌ Échec de la mise à jour du README : {e}")
+        sys.exit(1)

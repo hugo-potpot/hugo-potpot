@@ -1,4 +1,3 @@
-# NOTE: Move this file to .github/workflows/update-readme.yml so GitHub Actions can run it.
 name: Update README with Recent Projects
 
 on:
@@ -23,7 +22,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: pip install requests
+        run: pip install requests python-dotenv
 
       - name: Update README
         env:
@@ -32,8 +31,8 @@ jobs:
 
       - name: Commit & push changes
         run: |
-          git config user.name "HugoDemont62"
-          git config user.email "hugodemont62@hotmail.fr"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git diff --quiet && exit 0
           git add README.md
           git commit -m "🔄 Update recent projects"

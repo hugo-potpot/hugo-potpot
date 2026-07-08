@@ -1,30 +1,45 @@
-# 👋 Bienvenue sur mon Profil GitHub
+# 👋 Salut, moi c'est Hugo Potier
 
-<p align="left"> 
-  <img src="https://komarev.com/ghpvc/?username=hugodemont62&label=Profile%20views&color=0e75b6&style=flat" alt="Profile views" /> 
-</p>
+#### A passionate web developer from France 🇫🇷
+⤷ Full-stack web developer, I work mainly in **PHP** with **Laravel** framework 🐘
 
-<p align="left">
-  <a href="https://wakatime.com/@14fe3c61-8f4f-4dd2-b75c-eff28a472911" target="_blank" rel="noreferrer">
-    <img src="https://wakatime.com/badge/user/14fe3c61-8f4f-4dd2-b75c-eff28a472911.svg" alt="WakaTime badge" />
-  </a>
-</p>
+🔗 [LinkedIn](https://www.linkedin.com/in/hugo-potier-aba854252/)
 
-<img src="./days.gif" alt="Gif days" />
+⚐ Based in Lille 🍺
+
+ϟ Currently learning **Go**
 
 ## 🛠️ Tech Stack
 
+**Frontend**
+
 <p align="left">
   <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" />
-  <img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white" alt="Spring Boot" />
-  <img src="https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white" alt="Java" />
+  <img src="https://img.shields.io/badge/Vue.js-4FC08D?style=for-the-badge&logo=vuedotjs&logoColor=white" alt="Vue.js" />
+  <img src="https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white" alt="Next.js" />
   <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
   <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript" />
-  <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
-  <img src="https://img.shields.io/badge/SQL_Server-CC2927?style=for-the-badge&logo=microsoftsqlserver&logoColor=white" alt="SQL Server" />
-  <img src="https://img.shields.io/badge/PowerShell-5391FE?style=for-the-badge&logo=powershell&logoColor=white" alt="PowerShell" />
-  <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker" />
+  <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
+</p>
+
+**Backend**
+
+<p align="left">
+  <img src="https://img.shields.io/badge/PHP-777BB4?style=for-the-badge&logo=php&logoColor=white" alt="PHP" />
+  <img src="https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white" alt="Laravel" />
+  <img src="https://img.shields.io/badge/Go-00ADD8?style=for-the-badge&logo=go&logoColor=white" alt="Go" />
   <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
+  <img src="https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white" alt="Java" />
+  <img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white" alt="Spring Boot" />
+</p>
+
+**Data & Infra**
+
+<p align="left">
+  <img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white" alt="MySQL" />
+  <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
+  <img src="https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB" />
+  <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker" />
 </p>
 
 ## 🚀 Projets récents
@@ -32,32 +47,18 @@
 <!-- PROJECTS-START -->
 | Projet | Description | Langage | ⭐ | Dernière MàJ |
 |--------|-------------|---------|-----|--------------|
-| [convocation](https://github.com/HugoDemont62/convocation) | — | `HTML` | 0 | 06/07/2026 |
-| [climaData](https://github.com/HugoDemont62/climaData) | — | `TypeScript` | 0 | 26/06/2026 |
-| [king_of_the_box](https://github.com/HugoDemont62/king_of_the_box) | — | `C#` | 0 | 13/05/2026 |
-| [robot-cool-qui-casse-tout](https://github.com/HugoDemont62/robot-cool-qui-casse-tout) | Code du robot pour l'Eurobot 2026 | `Python` | 0 | 26/04/2026 |
-| [maxime-richard-portfolio](https://github.com/HugoDemont62/maxime-richard-portfolio) | projet portfolio maxime richard  | `JavaScript` | 0 | 23/04/2026 |
+| [stripe-invoice-cli](https://github.com/hugo-potpot/stripe-invoice-cli) | — | `Go` | 0 | 17/06/2026 |
+| [kura-app](https://github.com/hugo-potpot/kura-app) | — | `TypeScript` | 0 | 05/06/2026 |
+| [go-tcp-serv](https://github.com/hugo-potpot/go-tcp-serv) | — | `Go` | 0 | 28/05/2026 |
+| [AnalystTwitterBot](https://github.com/hugo-potpot/AnalystTwitterBot) | — | `Python` | 0 | 19/03/2026 |
+| [arcade-moonlander](https://github.com/hugo-potpot/arcade-moonlander) | — | `TypeScript` | 0 | 12/12/2025 |
 
-> 🕐 Dernière mise à jour : 08/07/2026 à 09:21 UTC+1
+> 🕐 Dernière mise à jour : 08/07/2026 à 19:00 UTC+1
 <!-- PROJECTS-END -->
-
-## 📊 GitHub Stats
-
-<p align="left">
-  <img src="https://github-readme-stats.vercel.app/api?username=hugodemont62&show_icons=true&theme=tokyonight&hide_border=true" alt="GitHub Stats" />
-</p>
-
-<p align="left">
-  <img src="https://github-readme-streak-stats.herokuapp.com/?user=hugodemont62&theme=tokyonight&hide_border=true" alt="GitHub Streak" />
-</p>
-
-<p align="left">
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=hugodemont62&layout=compact&theme=tokyonight&hide_border=true" alt="Top Langs" />
-</p>
 
 ## 📫 Comment me contacter ?
 
-- 📧 Email: hugodemontpro@gmail.com
+- 📧 Email: potierhugo62@gmail.com
 
 ---
-⭐️ De [Hugo Demont](https://github.com/HugoDemont62)
+⭐️ De [POTIER Hugo](https://github.com/hugo-potpot)
