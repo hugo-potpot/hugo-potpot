@@ -1,4 +1,4 @@
-# 👋 Salut, moi c'est Hugo Potier
+# Hi 👋, I'm Hugo Potier, but you can call Potpot! 😎
 
 #### A passionate web developer from France 🇫🇷
 ⤷ Full-stack web developer, I work mainly in **PHP** with **Laravel** framework 🐘
@@ -42,23 +42,23 @@
   <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker" />
 </p>
 
-## 🚀 Projets récents
+## 🚀 Recent Projects
 
 <!-- PROJECTS-START -->
-| Projet | Description | Langage | ⭐ | Dernière MàJ |
-|--------|-------------|---------|-----|--------------|
+| Project | Description | Language | ⭐ | Last Updated |
+|---------|--------------|----------|-----|--------------|
 | [stripe-invoice-cli](https://github.com/hugo-potpot/stripe-invoice-cli) | — | `Go` | 0 | 17/06/2026 |
 | [kura-app](https://github.com/hugo-potpot/kura-app) | — | `TypeScript` | 0 | 05/06/2026 |
 | [go-tcp-serv](https://github.com/hugo-potpot/go-tcp-serv) | — | `Go` | 0 | 28/05/2026 |
 | [AnalystTwitterBot](https://github.com/hugo-potpot/AnalystTwitterBot) | — | `Python` | 0 | 19/03/2026 |
 | [arcade-moonlander](https://github.com/hugo-potpot/arcade-moonlander) | — | `TypeScript` | 0 | 12/12/2025 |
 
-> 🕐 Dernière mise à jour : 08/07/2026 à 19:24 UTC+1
+> 🕐 Last updated: 08/07/2026 at 19:00 UTC+1
 <!-- PROJECTS-END -->
 
-## 📫 Comment me contacter ?
+## 📫 Get in touch
 
 - 📧 Email: potierhugo62@gmail.com
 
 ---
-⭐️ De [POTIER Hugo](https://github.com/hugo-potpot)
+⭐️ By [POTIER Hugo](https://github.com/hugo-potpot)
