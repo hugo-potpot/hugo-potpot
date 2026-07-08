@@ -26,6 +26,7 @@ jobs:
 
       - name: Update README
         env:
+          GITHUB_USERNAME: ${{ vars.GH_USERNAME }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python update_projects.py
 
