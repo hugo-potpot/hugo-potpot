@@ -53,7 +53,7 @@
 | [AnalystTwitterBot](https://github.com/hugo-potpot/AnalystTwitterBot) | — | `Python` | 0 | 19/03/2026 |
 | [arcade-moonlander](https://github.com/hugo-potpot/arcade-moonlander) | — | `TypeScript` | 0 | 12/12/2025 |
 
-> 🕐 Last updated: 22/07/2026 at 09:32 UTC+1
+> 🕐 Last updated: 23/07/2026 at 09:33 UTC+1
 <!-- PROJECTS-END -->
 
 ## 📫 Get in touch
