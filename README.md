@@ -47,13 +47,13 @@
 <!-- PROJECTS-START -->
 | Project | Description | Language | ⭐ | Last Updated |
 |---------|--------------|----------|-----|--------------|
-| [stripe-invoice-cli](https://github.com/hugo-potpot/stripe-invoice-cli) | — | `Go` | 0 | 18/08/2026 |
+| [stripe-invoice-cli](https://github.com/hugo-potpot/stripe-invoice-cli) | — | `Go` | 0 | 20/08/2026 |
 | [kura-app](https://github.com/hugo-potpot/kura-app) | — | `TypeScript` | 0 | 05/06/2026 |
 | [go-tcp-serv](https://github.com/hugo-potpot/go-tcp-serv) | — | `Go` | 0 | 28/05/2026 |
 | [AnalystTwitterBot](https://github.com/hugo-potpot/AnalystTwitterBot) | — | `Python` | 0 | 19/03/2026 |
 | [arcade-moonlander](https://github.com/hugo-potpot/arcade-moonlander) | — | `TypeScript` | 0 | 12/12/2025 |
 
-> 🕐 Last updated: 20/08/2026 at 07:49 UTC+1
+> 🕐 Last updated: 21/08/2026 at 07:50 UTC+1
 <!-- PROJECTS-END -->
 
 ## 📫 Get in touch
